@@ -16,12 +16,12 @@ namespace Ant
         double alpha;
         double beta;
 
-        public AntAI(List<Path> path, List<Station> stations, double alpha, double beta, int numberStations)
+        public AntAI(double alpha, double beta)
         {
-            PathList = path;
+            PathList = new List<Path>();
             this.alpha = alpha;
             this.beta = beta;
-            StationList = stations;
+            StationList = new List<Station>();
         }
         /// <summary>
         /// Основная исполняющая функция
@@ -57,7 +57,7 @@ namespace Ant
                     //tabuList.Add(NextStationToHome(tabuList[tabuList.Count - 1]));
                 }
                 PheromoneDecrement(pathList); // уменьшаем след ферамонов
-                PheromoneIncrement(tabuList); // усиливаем ферамоны на нашем пути
+                PheromoneIncrement(tabuList, pathList); // усиливаем ферамоны на нашем пути
                 List<Station> answer = new List<Station>();
                 foreach (var station in tabuList)
                 {
@@ -84,12 +84,19 @@ namespace Ant
         /// Увеличивание следа ферамонов
         /// </summary>
         /// <param name="stations"> станции в порядке прохождения </param>
-        public void PheromoneIncrement(List<Station> stations)
+        public void PheromoneIncrement(List<Station> stations, List<Path> pathList)
         {
             double PathLenth = PathLentCalculate(stations);
-            for (var i = 0; i < stations.Count; i++)
+            for (var i = 0; i < stations.Count - 1; i++)
             {
-                stations[i].GetPath(stations[i]).pheromones += 100 / PathLenth;
+                var path = stations[i].GetPath(stations[i + 1]);
+                foreach (var road in pathList)
+                {
+                    if(path.start.NumberOfStation ==  road.start.NumberOfStation && path.end.NumberOfStation == road.end.NumberOfStation)
+                    {
+                        road.pheromones += 100.0 / PathLenth;
+                    }
+                }   
             }
         }
         /// <summary>

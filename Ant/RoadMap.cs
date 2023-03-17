@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace Ant
 {
@@ -25,18 +20,16 @@ namespace Ant
         public RoadMap(int numberStation)
         {     
             Random randomDistance = new Random();
-            Random randomWeight = new Random();
             for (var i = 0; i < numberStation; i++)
             {
                 stationsMap.Add(new Station(i + 1));
                 for (var j = 0; j < i; j++)
                 {
                     var distance = randomDistance.Next(1, 100);
-                    var weight = randomWeight.NextDouble();
-                    roadMap.Add(new Path(stationsMap[i], stationsMap[j], distance, weight));
+                    roadMap.Add(new Path(stationsMap[i], stationsMap[j], distance, 0.2));
 
-                    stationsMap[i].NewPath(stationsMap[i], stationsMap[j], distance, weight);
-                    stationsMap[j].NewPath(stationsMap[j], stationsMap[i], distance, weight);
+                    stationsMap[i].NewPath(stationsMap[i], stationsMap[j], distance, 0.2);
+                    stationsMap[j].NewPath(stationsMap[j], stationsMap[i], distance, 0.2);
                 }
             }
         }
@@ -69,11 +62,14 @@ namespace Ant
                 {
                     if(i!=j)
                     {
-                        roadMap.Add(new Path(stationsMap[i - 1], stationsMap[j - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i,j].CellText.Text)));
-                        roadMap.Add(new Path(stationsMap[j - 1], stationsMap[i - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i, j].CellText.Text)));
+                        if(distance[i, j].CellText.Text != "" && weight[i, j].CellText.Text != "")
+                        {
+                            roadMap.Add(new Path(stationsMap[i - 1], stationsMap[j - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i, j].CellText.Text)));
+                            roadMap.Add(new Path(stationsMap[j - 1], stationsMap[i - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i, j].CellText.Text)));
 
-                        stationsMap[i - 1].NewPath(stationsMap[i - 1], stationsMap[j - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i,j].CellText.Text));
-                        stationsMap[j - 1].NewPath(stationsMap[j - 1], stationsMap[i - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i, j].CellText.Text));
+                            stationsMap[i - 1].NewPath(stationsMap[i - 1], stationsMap[j - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i, j].CellText.Text));
+                            stationsMap[j - 1].NewPath(stationsMap[j - 1], stationsMap[i - 1], int.Parse(distance[i, j].CellText.Text), double.Parse(weight[i, j].CellText.Text));
+                        }                       
                     }
                 }
             }
@@ -106,7 +102,7 @@ namespace Ant
         }
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)

@@ -1,23 +1,6 @@
-﻿using System.Data;
-using System.Windows.Data;
-using System.Windows.Navigation;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Ant
 {
@@ -115,8 +98,7 @@ namespace Ant
             myRoadMap.stationsMap.Clear();
             myRoadMap.UpdateRoadMap(tableDistance, tableWeight);
             
-            AntAI antAI = new AntAI(myRoadMap.roadMap, myRoadMap.stationsMap,
-                double.Parse(DegreeAlpha.Text), double.Parse(DegreeBeta.Text), int.Parse(NumberIterartion.Text));
+            AntAI antAI = new AntAI(double.Parse(DegreeAlpha.Text), double.Parse(DegreeBeta.Text));
 
             var myPath = antAI.AntsAI(myRoadMap.stationsMap[int.Parse(FirstStation.Text) - 1],
                 myRoadMap.stationsMap, int.Parse(NumberIterartion.Text), myRoadMap.roadMap);
